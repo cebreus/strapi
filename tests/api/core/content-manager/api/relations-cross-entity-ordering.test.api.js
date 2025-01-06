@@ -13,7 +13,6 @@ const data = {
 };
 let id1;
 let id2;
-let id3;
 const populateShop = [
   'products_ow',
   'products_oo',
@@ -132,27 +131,7 @@ const updateEntry = async (singularName, id, data, populate) => {
   return body;
 };
 
-const cloneEntry = async (singularName, id, data, populate) => {
-  const { body } = await rq({
-    method: 'POST',
-    url: `/content-manager/collection-types/api::${singularName}.${singularName}/clone/${id}`,
-    body: data,
-    qs: { populate },
-  });
-  return body;
-};
-
-const getRelations = async (uid, field, id) => {
-  const res = await rq({
-    method: 'GET',
-    url: `/content-manager/relations/${uid}/${id}/${field}`,
-  });
-
-  return res.body;
-};
-
-// TODO: Fix relations
-describe.skip('Relations', () => {
+describe('Relations', () => {
   const builder = createTestBuilder();
 
   beforeAll(async () => {
@@ -171,9 +150,8 @@ describe.skip('Relations', () => {
     data.products.push(createdProduct2);
     data.products.push(createdProduct3);
 
-    id1 = data.products[0].documentId;
-    id2 = data.products[1].documentId;
-    id3 = data.products[2].documentId;
+    id1 = data.products[0].data.id;
+    id2 = data.products[1].data.id;
   });
 
   afterAll(async () => {
@@ -210,14 +188,14 @@ describe.skip('Relations', () => {
       // Update shop 1 relation order
       await updateEntry(
         'shop',
-        shops[0].documentId,
+        shops[0].data.documentId,
         {
           name: 'Cazotte Shop',
           products_om: { disconnect: [id2] },
           products_mm: { disconnect: [id2] },
           products_mw: { disconnect: [id2] },
           myCompo: {
-            id: shops[0].myCompo.documentId,
+            id: shops[0].data.myCompo.id,
             compo_products_mw: { disconnect: [id2] },
           },
         },
@@ -225,7 +203,7 @@ describe.skip('Relations', () => {
       );
 
       const updatedShop2 = await strapi.db.query('api::shop.shop').findOne({
-        where: { documentId: shops[1].documentId },
+        where: { documentId: shops[1].data.documentId },
         populate: populateShop,
       });
 
