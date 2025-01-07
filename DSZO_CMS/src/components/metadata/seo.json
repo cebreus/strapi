@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_metadata_seos",
+  "info": {
+    "displayName": "SEO",
+    "icon": "globe",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "robots": {
+      "type": "enumeration",
+      "enum": [
+        "index,follow",
+        "noindex,follow",
+        "index,nofollow",
+        "noindex,nofollow"
+      ],
+      "default": "index,follow"
+    }
+  }
+}
